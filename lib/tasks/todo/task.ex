@@ -1,4 +1,4 @@
-defmodule Hello.Todo.Task do
+defmodule Tasks.Todo.Task do
   use Ecto.Schema
   import Ecto.Changeset
 
