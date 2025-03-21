@@ -4,6 +4,10 @@ defmodule Tasks.Todo do
   alias Tasks.Todo.Task
   alias Tasks.Repo
 
+  def list_tasks() do
+    Repo.all(Task)
+  end
+
   def create_task(attrs \\ %{}) do
     %Task{}
     |> Task.changeset(attrs)

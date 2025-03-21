@@ -14,5 +14,6 @@ defmodule Tasks.Todo.Task do
     task
     |> cast(attrs, [:task, :done])
     |> validate_required([:task, :done])
+    |> validate_length(:task, min: 4, max: 25)
   end
 end
