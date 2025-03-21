@@ -40,9 +40,11 @@ defmodule Tasks.TodoTest do
       assert %{task: ["should be at least 4 character(s)"]} = errors_on(changeset)
     end
 
-    test "title must be at most 25 characters long" do
-      changeset = Task.changeset(%Task{}, %{task: "aaaaaaaaaaaaaaaaaaaaaaaaaa"})
-      assert %{task: ["should be at most 25 character(s)"]} = errors_on(changeset)
+    test "title must be at most 45 characters long" do
+      changeset =
+        Task.changeset(%Task{}, %{task: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"})
+
+      assert %{task: ["should be at most 45 character(s)"]} = errors_on(changeset)
     end
   end
 end
