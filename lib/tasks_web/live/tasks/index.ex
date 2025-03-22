@@ -11,14 +11,15 @@ defmodule TasksWeb.TasksLive.Index do
         <.input field={@form[:task]} type="text" label="Task" />
       </.simple_form>
 
-      <.table id="tasks" rows={@tasks}>
+      <.table
+        id="tasks"
+        rows={@tasks}
+        row_click={fn task -> JS.push("toggle", value: %{id: task.id}) end}
+      >
         <:col :let={task} label="Task">{task.task}</:col>
         <:col :let={task} label="Done">{task.done}</:col>
         <:action :let={task}>
-          <.link
-            phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{task.id}")}
-            data-confirm="Are you sure?"
-          >
+          <.link phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{task.id}")}>
             X
           </.link>
         </:action>
@@ -37,6 +38,18 @@ defmodule TasksWeb.TasksLive.Index do
       |> assign(:form, to_form(Todo.change_task(%Task{})))
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("toggle", %{"id" => id}, socket) do
+    Todo.toggle_task(id)
+
+    socket =
+      socket
+      |> assign(:tasks, Todo.list_tasks())
+      |> assign(:form, to_form(Todo.change_task(%Task{})))
+
+    {:noreply, socket}
   end
 
   @impl true
