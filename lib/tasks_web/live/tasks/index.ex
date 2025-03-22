@@ -17,7 +17,7 @@ defmodule TasksWeb.TasksLive.Index do
         row_click={fn task -> JS.push("toggle", value: %{id: task.id}) end}
       >
         <:col :let={task} label="Task">{task.task}</:col>
-        <:col :let={task} label="Done">{task.done}</:col>
+        <:col :let={task} label="Done"><.status task_status={task.done} /></:col>
         <:action :let={task}>
           <.link phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{task.id}")}>
             X
@@ -25,6 +25,17 @@ defmodule TasksWeb.TasksLive.Index do
         </:action>
       </.table>
     </div>
+    """
+  end
+
+  attr :task_status, :boolean, required: true
+
+  def status(assigns) do
+    icon = if assigns.task_status, do: "hero-check-solid", else: "hero-x-mark-solid"
+    assigns = assign(assigns, :icon_class, icon)
+
+    ~H"""
+    <.icon name={@icon_class} />
     """
   end
 
