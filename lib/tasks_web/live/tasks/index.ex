@@ -32,18 +32,34 @@ defmodule TasksWeb.TasksLive.Index do
         </thead>
         <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
           <tr :for={task <- @tasks} id={"row-#{task.id}"} class="group hover:bg-zinc-50">
-            <td class="p-0 pb-4 pr-6 font-normal" phx-click={JS.push("toggle", value: %{id: task.id})}>
-              {task.task}
-            </td>
-            <td class="p-0 pb-4 pr-6"><.status task_status={task.done} /></td>
-            <td class="p-0 pb-4 font-normal">
-              <.link phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{task.id}")}>
-                X
-              </.link>
-            </td>
+            <.task_row row={task} />
           </tr>
         </tbody>
       </table>
+    </div>
+    """
+  end
+
+  attr :row, :map, required: true
+
+  def task_row(assigns) do
+    bg = if assigns.row.done, do: "bg-cyan-100", else: ""
+    assigns = assign(assigns, :bg, bg)
+
+    ~H"""
+    <div class={@bg}>
+      <td
+        class={[@bg, "p-0 pb-4 pr-6 font-normal"]}
+        phx-click={JS.push("toggle", value: %{id: @row.id})}
+      >
+        {@row.task}
+      </td>
+      <td class={[@bg, "p-0 pb-4 pr-6 font-normal"]}><.status task_status={@row.done} /></td>
+      <td class={[@bg, "p-0 pb-4 font-normal"]}>
+        <.link phx-click={JS.push("delete", value: %{id: @row.id}) |> hide("##{@row.id}")}>
+          X
+        </.link>
+      </td>
     </div>
     """
   end
