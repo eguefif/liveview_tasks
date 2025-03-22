@@ -5,25 +5,45 @@ defmodule TasksWeb.TasksLive.Index do
 
   @impl true
   def render(assigns) do
+    # row_click={fn task -> JS.push("toggle", value: %{id: task.id}) end}
     ~H"""
     <div>
       <.simple_form for={@form} id="task-form" phx-change="validate" phx-submit="save">
         <.input field={@form[:task]} type="text" label="Task" />
       </.simple_form>
 
-      <.table
-        id="tasks"
-        rows={@tasks}
-        row_click={fn task -> JS.push("toggle", value: %{id: task.id}) end}
-      >
-        <:col :let={task} label="Task">{task.task}</:col>
-        <:col :let={task} label="Done"><.status task_status={task.done} /></:col>
-        <:action :let={task}>
-          <.link phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{task.id}")}>
-            X
-          </.link>
-        </:action>
-      </.table>
+      <.tasks_list tasks={@tasks} />
+    </div>
+    """
+  end
+
+  attr :tasks, :list, required: true
+
+  def tasks_list(assigns) do
+    ~H"""
+    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
+      <table class="w[40rem] mt-11 sm:w-full">
+        <thead class="text-sm text-left leading text-zinc-500">
+          <tr>
+            <th class="p-0 pb-4 pr-6 font-normal">Task</th>
+            <th class="p-0 pb-4 pr-6 font-normal">Completed</th>
+            <th class="p-0 pb-4 font-normal"></th>
+          </tr>
+        </thead>
+        <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
+          <tr :for={task <- @tasks} id={"row-#{task.id}"} class="group hover:bg-zinc-50">
+            <td class="p-0 pb-4 pr-6 font-normal" phx-click={JS.push("toggle", value: %{id: task.id})}>
+              {task.task}
+            </td>
+            <td class="p-0 pb-4 pr-6"><.status task_status={task.done} /></td>
+            <td class="p-0 pb-4 font-normal">
+              <.link phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{task.id}")}>
+                X
+              </.link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     """
   end
