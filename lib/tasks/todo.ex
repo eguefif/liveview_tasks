@@ -26,6 +26,10 @@ defmodule Tasks.Todo do
     |> Repo.update!()
   end
 
+  def change_task(%Task{} = task, attrs \\ %{}) do
+    Task.changeset(task, attrs)
+  end
+
   def toggle_task(id) do
     task = Repo.get!(Task, id)
     attrs = %{task: task.task, done: !task.done}
